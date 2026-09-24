@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from 'react';
 import Form from "@/components/Form"
 
-export default function loginPage() {
+export default function LoginPage() {
     const handleLogin =  async (email, password) => {
         const response = await fetch("http://localhost:3000/login", {
             method: "POST",
