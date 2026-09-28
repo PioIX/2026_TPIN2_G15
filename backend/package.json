@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "pio": "nodemon --env-file=.pio.env index.js"
   },
   "keywords": [
     "socket.io",

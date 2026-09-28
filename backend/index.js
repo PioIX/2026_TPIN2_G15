@@ -51,17 +51,17 @@ const { realizarQuery } = require("./modulos/mysql");
 
 app.post("/login", async (req, res) => {
 
-    const { mail, contrasena } = req.body;
-
+    const { email, password } = req.body;
+    console.log({ email, password })
     try {
-
+        
         const usuarios = await realizarQuery(
             `SELECT *
              FROM Usuarios
              WHERE mail = ? AND contrasena = ?`,
-            [mail, contrasena]
+            [email, password]
         );
-
+        console.log(usuarios)
         if (usuarios.length === 0) {
             return res.status(401).json({
                 mensaje: "Mail o contraseña incorrectos"
