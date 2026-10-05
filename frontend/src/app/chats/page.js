@@ -1,24 +1,36 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import ChatList from "@/components/ChatList";
+import { useEffect, useState } from "react"
+import ChatList from "@/components/ChatList"
 
 export default function ChatsPage() {
 
-    const [chats, setChats] = useState([]);
+    const [chats, setChats] = useState([])
 
     useEffect(() => {
 
-        fetch("http://localhost:4000/chats")
+        const usuarioGuardado = localStorage.getItem("usuario")
+
+        if (!usuarioGuardado) {
+            return
+        }
+
+        const usuario = JSON.parse(usuarioGuardado)
+
+        fetch(`http://localhost:4000/chats/${usuario.id_usuario}`)
             .then(response => response.json())
             .then(data => {
-                setChats(data);
-            });
+                console.log(data)
+                setChats(data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
 
-    }, []);
+    }, [])
 
-    function seleccionarChat(chat) {
-        console.log(chat);
+    const manejarChat = (chat) => {
+        console.log("Chat seleccionado:", chat)
     }
 
     return (
@@ -28,9 +40,9 @@ export default function ChatsPage() {
 
             <ChatList
                 chats={chats}
-                seleccionarChat={seleccionarChat}
+                onChatClick={manejarChat}
             />
 
         </div>
-    );
+    )
 }

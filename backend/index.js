@@ -91,15 +91,15 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
 
     const {
-        nombre,
+        username,
         mail,
         contrasena,
-        num_telefono,
         foto
     } = req.body;
 
     try {
 
+        // Verificar si ya existe el mail
         const usuarioExistente = await realizarQuery(
             `SELECT *
              FROM Usuarios
@@ -113,15 +113,29 @@ app.post("/register", async (req, res) => {
             });
         }
 
+        // Verificar si ya existe el username
+        const usernameExistente = await realizarQuery(
+            `SELECT *
+             FROM Usuarios
+             WHERE username = ?`,
+            [username]
+        );
+
+        if (usernameExistente.length > 0) {
+            return res.status(400).json({
+                mensaje: "El username ya está registrado"
+            });
+        }
+
+        // Crear usuario
         const resultado = await realizarQuery(
             `INSERT INTO Usuarios
-            (nombre, mail, contrasena, num_telefono, foto)
-            VALUES (?, ?, ?, ?, ?)`,
+            (username, mail, contrasena, foto)
+            VALUES (?, ?, ?, ?)`,
             [
-                nombre,
+                username,
                 mail,
                 contrasena,
-                num_telefono || null,
                 foto || null
             ]
         );
@@ -162,7 +176,7 @@ app.get("/chats/:id_usuario", async (req, res) => {
                 c.nombre_grupo,
 
                 u.id_usuario AS id_contacto,
-                u.nombre AS nombre_contacto,
+                u.username AS nombre_contacto,,
                 u.foto AS foto_contacto,
                 u.mail AS mail_contacto
 

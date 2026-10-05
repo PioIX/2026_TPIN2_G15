@@ -1,6 +1,6 @@
-import ChatItem from "./ChatItem";
+import ChatItem from "./ChatItem"
 
-export default function ChatList({ chats, seleccionarChat }) {
+export default function ChatList({ chats, onChatClick }) {
 
     return (
         <div>
@@ -9,10 +9,10 @@ export default function ChatList({ chats, seleccionarChat }) {
                 <ChatItem
                     key={chat.id_chat}
                     chat={chat}
-                    onClick={() => seleccionarChat(chat)}
+                    onClick={() => onChatClick(chat)}
                 />
             ))}
 
         </div>
-    );
+    )
 }
