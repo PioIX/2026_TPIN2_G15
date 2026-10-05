@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Form from "@/components/Form"
+import styles from "./Login.module.css"
 
 export default function LoginPage() {
 
@@ -28,38 +29,48 @@ export default function LoginPage() {
     }
 
     return (
-        <div>
+        <div className={styles.contenedor}>
 
-            {!register ? (
+            <div className={styles.login}>
 
-                <>
-                    <Form
-                        title="Iniciar sesión"
-                        buttonText="Iniciar sesión"
-                        register={false}
-                    />
+                {!register ? (
 
-                    <button onClick={() => setRegister(true)}>
-                        Quiero registrarme
-                    </button>
-                </>
+                    <>
+                        <Form
+                            title="Iniciar sesión"
+                            buttonText="Iniciar sesión"
+                            register={false}
+                        />
 
-            ) : (
+                        <button
+                            className={styles.cambiar}
+                            onClick={() => setRegister(true)}
+                        >
+                            Quiero registrarme
+                        </button>
+                    </>
 
-                <>
-                    <Form
-                        title="Registrarse"
-                        buttonText="Registrarse"
-                        onButtonClick={handleRegister}
-                        register={true}
-                    />
+                ) : (
 
-                    <button onClick={() => setRegister(false)}>
-                        Quiero iniciar sesión
-                    </button>
-                </>
+                    <>
+                        <Form
+                            title="Registrarse"
+                            buttonText="Registrarse"
+                            onButtonClick={handleRegister}
+                            register={true}
+                        />
 
-            )}
+                        <button
+                            className={styles.cambiar}
+                            onClick={() => setRegister(false)}
+                        >
+                            Quiero iniciar sesión
+                        </button>
+                    </>
+
+                )}
+
+            </div>
 
         </div>
     )

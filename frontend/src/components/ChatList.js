@@ -1,9 +1,10 @@
+import styles from "../app/chats/Chats.module.css"
 import ChatItem from "./ChatItem"
 
 export default function ChatList({ chats, onChatClick }) {
 
     return (
-        <div>
+        <div className={styles["chat-list"]}>
 
             {chats.map((chat) => (
                 <ChatItem

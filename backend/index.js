@@ -31,11 +31,11 @@ const server = app.listen(PORT, () => {
 });
 
 const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  },
+    cors: {
+        origin: ["http://localhost:3000", "http://localhost:3001"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+    },
 });
 
 io.use((socket, next) => {
@@ -159,7 +159,6 @@ app.post("/register", async (req, res) => {
 /* =========================================================
    LISTAR CHATS DE UN USUARIO
    ========================================================= */
-
 app.get("/chats/:id_usuario", async (req, res) => {
 
     const { id_usuario } = req.params;
@@ -175,28 +174,62 @@ app.get("/chats/:id_usuario", async (req, res) => {
                 c.foto,
                 c.nombre_grupo,
 
-                u.id_usuario AS id_contacto,
-                u.username AS nombre_contacto,,
-                u.foto AS foto_contacto,
-                u.mail AS mail_contacto
+                (
+                    SELECT u.id_usuario
+                    FROM UsuariosPorChat upc2
+                    INNER JOIN Usuarios u
+                        ON upc2.id_usuario = u.id_usuario
+                    WHERE upc2.id_chat = c.id_chat
+                    AND upc2.id_usuario != ?
+                    LIMIT 1
+                ) AS id_contacto,
+
+                (
+                    SELECT u.username
+                    FROM UsuariosPorChat upc2
+                    INNER JOIN Usuarios u
+                        ON upc2.id_usuario = u.id_usuario
+                    WHERE upc2.id_chat = c.id_chat
+                    AND upc2.id_usuario != ?
+                    LIMIT 1
+                ) AS nombre_contacto,
+
+                (
+                    SELECT u.foto
+                    FROM UsuariosPorChat upc2
+                    INNER JOIN Usuarios u
+                        ON upc2.id_usuario = u.id_usuario
+                    WHERE upc2.id_chat = c.id_chat
+                    AND upc2.id_usuario != ?
+                    LIMIT 1
+                ) AS foto_contacto,
+
+                (
+                    SELECT u.mail
+                    FROM UsuariosPorChat upc2
+                    INNER JOIN Usuarios u
+                        ON upc2.id_usuario = u.id_usuario
+                    WHERE upc2.id_chat = c.id_chat
+                    AND upc2.id_usuario != ?
+                    LIMIT 1
+                ) AS mail_contacto
 
             FROM Chats c
 
             INNER JOIN UsuariosPorChat upc
                 ON c.id_chat = upc.id_chat
 
-            LEFT JOIN Usuarios u
-                ON upc.id_usuario = u.id_usuario
-
-            WHERE c.id_chat IN (
-                SELECT id_chat
-                FROM UsuariosPorChat
-                WHERE id_usuario = ?
-            )
+            WHERE upc.id_usuario = ?
 
             ORDER BY c.fecha_creado DESC
             `,
-            [id_usuario]
+            [
+                id_usuario,
+                id_usuario,
+                id_usuario,
+                id_usuario,
+                id_usuario
+            ]
         );
 
         res.json(chats);
@@ -210,6 +243,8 @@ app.get("/chats/:id_usuario", async (req, res) => {
         });
     }
 });
+
+
 
 
 /* =========================================================
@@ -416,7 +451,7 @@ app.post("/grupos", async (req, res) => {
 
 app.get("/mensajes/:id_chat", async (req, res) => {
 
-    const { id_chat } = req.params;
+    const { id_chat } = req.params
 
     try {
 
@@ -429,32 +464,28 @@ app.get("/mensajes/:id_chat", async (req, res) => {
                 m.contenido,
                 m.fecha_hora,
                 m.estado,
-                u.nombre,
+                u.username AS nombre,
                 u.mail
-
             FROM Mensajes m
-
             INNER JOIN Usuarios u
                 ON m.id_usuario = u.id_usuario
-
             WHERE m.id_chat = ?
-
             ORDER BY m.fecha_hora ASC
             `,
             [id_chat]
-        );
+        )
 
-        res.json(mensajes);
+        res.json(mensajes)
 
     } catch (error) {
 
-        console.log(error);
+        console.log(error)
 
         res.status(500).json({
             mensaje: "Error al obtener los mensajes"
-        });
+        })
     }
-});
+})
 
 
 /* =========================================================
@@ -523,7 +554,7 @@ io.on("connection", (socket) => {
                     m.contenido,
                     m.fecha_hora,
                     m.estado,
-                    u.nombre,
+                    u.username,
                     u.mail
 
                 FROM Mensajes m

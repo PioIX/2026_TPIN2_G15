@@ -1,3 +1,5 @@
+import styles from "../app/chats/Chats.module.css"
+
 export default function ChatItem({ chat, onClick }) {
 
     const esGrupo = chat.tipo_chat
@@ -11,18 +13,18 @@ export default function ChatItem({ chat, onClick }) {
         : chat.foto_contacto
 
     return (
-        <div onClick={onClick}>
+        <div className={styles["chat-item"]} onClick={onClick}>
 
             <img
+                className={styles["chat-foto"]}
                 src={foto || "/foto-default.jpg"}
                 alt="Foto"
-                width="50"
-                height="50"
             />
 
-            <span>
-                {nombre}
-            </span>
+            <div className={styles["chat-info"]}>
+                <h3>{nombre}</h3>
+                <p>{esGrupo ? "Grupo" : chat.mail_contacto}</p>
+            </div>
 
         </div>
     )
