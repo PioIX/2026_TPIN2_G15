@@ -4,7 +4,7 @@ Create TABLE Usuarios(
    apellido varchar(50) not null,
    mail varchar(100) unique not null,
    contrasena varchar(100) not null,
-   num_telefono int
+   num_telefono text
 );
 
 create table Chats(

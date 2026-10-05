@@ -4,19 +4,20 @@ import { useState } from "react"
 
 export default function Form({ title, buttonText, onButtonClick, register }) {
 
-    const [username, setUsername] = useState("")
-    const [email, setEmail] = useState("ctrotta@pioix.edu.ar")
-    const [password, setPassword] = useState("")
-    const [photo, setPhoto] = useState(null)
+    const [nombre, setNombre] = useState("")
+    const [mail, setMail] = useState("")
+    const [contrasena, setContrasena] = useState("")
+    const [foto, setFoto] = useState(null)
+    const [num_telefono, setNum_telefono] = useState("")
 
-    const handleLogin =  async (email, password) => {
-        console.log({ email: email, password: password })
+    const handleLogin =  async (mail, contrasena) => {
+        console.log({ mail: mail, contrasena: contrasena })
         const response = await fetch("http://localhost:4000/login", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email: email, password: password })
+            body: JSON.stringify({ email: mail, password: contrasena })
         })
 
         const data = await response.json()
@@ -26,10 +27,10 @@ export default function Form({ title, buttonText, onButtonClick, register }) {
 
     const handleClick = () => {
         if (register) {
-            onButtonClick(username, email, password, photo)
+            onButtonClick(nombre, mail, contrasena, foto, num_telefono)
         }
         else {
-            handleLogin(email, password)
+            handleLogin(mail, contrasena)
         }
     }
 
@@ -40,13 +41,14 @@ export default function Form({ title, buttonText, onButtonClick, register }) {
 
             {register && (
                 <div>
-                    <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
-                    <input type="file" onChange={(e) => setPhoto(e.target.files[0])}></input>
+                    <input type="text" placeholder="Usuario" value={nombre} onChange={(e) => setNombre(e.target.value)}></input>
+                    <input type="file" onChange={(e) => setFoto(e.target.files[0])}></input>
+                    <input type="text" placeholder="Número de teléfono" value={num_telefono} onChange={(e) => setNum_telefono(e.target.value)}></input>
                 </div>
             )}
 
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
-            <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <input type="email" placeholder="Email" value={mail} onChange={(e) => setMail(e.target.value)}></input>
+            <input type="password" placeholder="Contraseña" value={contrasena} onChange={(e) => setContrasena(e.target.value)}></input>
             <button onClick={handleClick}>{buttonText}</button>
         </div>
     )
@@ -55,39 +57,3 @@ export default function Form({ title, buttonText, onButtonClick, register }) {
 
 
 
-
-/*"use client"
-import { useState } from "react"
-
-export default function Form({ title, buttonText, onButtonClick }) {
-
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    
-
-    return (
-        <div>
-            <h1>{title}</h1>
-
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <button onClick={() => onButtonClick(email, password)}>
-                {buttonText}
-            </button>
-        </div>
-    )
-}
-const [username, setUsername] = useState("")
-const [foto, setFoto] = useState()*/

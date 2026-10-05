@@ -92,10 +92,10 @@ app.post("/register", async (req, res) => {
 
     const {
         nombre,
-        apellido,
         mail,
         contrasena,
-        num_telefono
+        num_telefono,
+        foto
     } = req.body;
 
     try {
@@ -115,14 +115,14 @@ app.post("/register", async (req, res) => {
 
         const resultado = await realizarQuery(
             `INSERT INTO Usuarios
-            (nombre, apellido, mail, contrasena, num_telefono)
+            (nombre, mail, contrasena, num_telefono, foto)
             VALUES (?, ?, ?, ?, ?)`,
             [
                 nombre,
-                apellido,
                 mail,
                 contrasena,
-                num_telefono
+                num_telefono || null,
+                foto || null
             ]
         );
 
@@ -163,7 +163,7 @@ app.get("/chats/:id_usuario", async (req, res) => {
 
                 u.id_usuario AS id_contacto,
                 u.nombre AS nombre_contacto,
-                u.apellido AS apellido_contacto,
+                u.foto AS foto_contacto,
                 u.mail AS mail_contacto
 
             FROM Chats c
@@ -416,7 +416,6 @@ app.get("/mensajes/:id_chat", async (req, res) => {
                 m.fecha_hora,
                 m.estado,
                 u.nombre,
-                u.apellido,
                 u.mail
 
             FROM Mensajes m
@@ -511,7 +510,6 @@ io.on("connection", (socket) => {
                     m.fecha_hora,
                     m.estado,
                     u.nombre,
-                    u.apellido,
                     u.mail
 
                 FROM Mensajes m
