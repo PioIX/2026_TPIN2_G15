@@ -2,17 +2,20 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
+import { useSocket } from "../../hooks/useSocket"
 import styles from "./Chat.module.css"
-
 export default function ChatPage() {
 
     const searchParams = useSearchParams()
 
     const id_chat = searchParams.get("id_chat")
 
+    const { socket } = useSocket()
+
     const [mensajes, setMensajes] = useState([])
     const [usuario, setUsuario] = useState(null)
     const [nombreChat, setNombreChat] = useState("Chat")
+    const [mensaje, setMensaje] = useState("")
 
     useEffect(() => {
 
@@ -60,7 +63,6 @@ export default function ChatPage() {
         fetch(`http://localhost:4000/mensajes/${id_chat}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 setMensajes(data)
             })
             .catch(error => {
@@ -68,6 +70,54 @@ export default function ChatPage() {
             })
 
     }, [id_chat])
+
+    useEffect(() => {
+
+        if (!socket || !id_chat) {
+            return
+        }
+
+        socket.emit("joinChat", id_chat)
+
+        const recibirMensaje = (nuevoMensaje) => {
+
+            setMensajes((mensajesActuales) => [
+                ...mensajesActuales,
+                nuevoMensaje
+            ])
+
+        }
+
+        socket.on("newMessage", recibirMensaje)
+
+        return () => {
+
+            socket.emit("leaveChat", id_chat)
+
+            socket.off("newMessage", recibirMensaje)
+
+        }
+
+    }, [socket, id_chat])
+
+    const enviarMensaje = () => {
+
+        if (mensaje.trim() === "") {
+            return
+        }
+
+        if (!usuario || !socket) {
+            return
+        }
+
+        socket.emit("sendMessage", {
+            id_usuario: usuario.id_usuario,
+            id_chat: Number(id_chat),
+            contenido: mensaje
+        })
+
+        setMensaje("")
+    }
 
     return (
         <div className={styles.contenedor}>
@@ -105,6 +155,32 @@ export default function ChatPage() {
                         </div>
                     )
                 })}
+
+            </div>
+
+            <div className={styles["input-container"]}>
+
+                <input
+                    className={styles["input-mensaje"]}
+                    type="text"
+                    placeholder="Escribí un mensaje..."
+                    value={mensaje}
+                    onChange={(e) => setMensaje(e.target.value)}
+                    onKeyDown={(e) => {
+
+                        if (e.key === "Enter") {
+                            enviarMensaje()
+                        }
+
+                    }}
+                />
+
+                <button
+                    className={styles["boton-enviar"]}
+                    onClick={enviarMensaje}
+                >
+                    Enviar
+                </button>
 
             </div>
 

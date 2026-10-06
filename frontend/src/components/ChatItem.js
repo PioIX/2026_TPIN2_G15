@@ -9,15 +9,15 @@ export default function ChatItem({ chat, onClick }) {
         : chat.nombre_contacto
 
     const foto = esGrupo
-        ? chat.foto
-        : chat.foto_contacto
+        ? chat.foto || "/foto_default.jpg"
+        : chat.foto_contacto || "/foto_default.jpg"
 
     return (
         <div className={styles["chat-item"]} onClick={onClick}>
 
             <img
                 className={styles["chat-foto"]}
-                src={foto || "/foto-default.jpg"}
+                src={foto}
                 alt="Foto"
             />
 

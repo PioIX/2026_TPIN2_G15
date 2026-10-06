@@ -52,3 +52,30 @@
     margin: 0;
     font-size: 15px;
 }
+
+
+.input-container {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    gap: 10px;
+}
+
+.input-mensaje {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.boton-enviar {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.boton-enviar:hover {
+    opacity: 0.8;
+}
